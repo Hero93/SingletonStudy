@@ -20,7 +20,7 @@ struct LoggedInUser {}
 //   For example, if you have an object that performs some really intense algorithm to determine the number of faces in a picture, make the numberOfFaces
 //   property lazily initialized.
 
-final class APIClient {
+class APIClient {
 
     // this is constant and lazy loaded
     
@@ -31,6 +31,13 @@ final class APIClient {
     private init() {}
     
     func login(completion: (LoggedInUser)->Void) {}
+}
+
+class MockApiClient: APIClient {
+    
+    override func login(completion: (LoggedInUser) -> Void) {
+        // mock code
+    }
 }
 
 /// singleton (convenience method in Swift system libraries)
@@ -45,12 +52,10 @@ class LoginVC: UIViewController {
     
     func didTapLoginButton() {
         
-        // How can you override the login function inside the APIClient instance in order to provide a mock one?
-        // If the class is final, I can't subclass it
-        // instance is a let, so I can't changed it
-        // APIClient -> impossible to test !!
+        // If APIClient isn't final, I can create a subclass (MockAPIClient)
+        // and override the login function in order to put my test code (mock)
         
-        APIClient.instance.login { user in
+        MockApiClient.instance.login { user in
             
         }
     }
