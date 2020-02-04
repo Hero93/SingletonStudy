@@ -10,7 +10,7 @@ import UIKit
 
 /// Singleton (by the book implementation, not using Swift tools)
 
-class APIClient {
+final class APIClient {
 
     private static let instance = APIClient()
 
