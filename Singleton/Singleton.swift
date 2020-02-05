@@ -20,11 +20,12 @@ struct FeedItem {}
 
 // How do I test a Singleton ??
 
-class LoginVC: UIViewController, LoginProtocol {
+class LoginVC: UIViewController {
     
     // "Protocol" example
-    func login(completion: (LoggedInUser) -> Void) {}
-    
+
+    var loginClient: LoginProtocol?
+        
     func didTapLoginButton() {
                         
         // The client it's still shared between the module.
@@ -44,6 +45,10 @@ class LoginVC: UIViewController, LoginProtocol {
         
         // Working with Protocols and dependency injection it's a great way to improve.
         // This code it's also very testable because we don't need a web service to load the data, we can mock data.
+        
+        loginClient?.login { user in
+            
+        }
     }
 }
 
