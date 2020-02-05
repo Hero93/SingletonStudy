@@ -9,6 +9,7 @@
 import UIKit
 
 struct LoggedInUser {}
+struct FeedItem {}
 
 /// Singleton in Swift
 
@@ -24,13 +25,14 @@ class APIClient {
 
     // this is constant and lazy loaded
     
-    static let instance = APIClient()
+    static let shared = APIClient()
 
     // Prevent people to create an APIClient
 
     private init() {}
     
     func login(completion: (LoggedInUser)->Void) {}
+    func loadFeed(completion: ([FeedItem])->Void) {}
 }
 
 class MockApiClient: APIClient {
@@ -44,19 +46,32 @@ class MockApiClient: APIClient {
 //URLSession.shared
 //URLSession()
 
-let client = APIClient.instance
-
 // How do I test a Singleton ??
 
 class LoginVC: UIViewController {
+    
+    var api = APIClient.shared
     
     func didTapLoginButton() {
         
         // If APIClient isn't final, I can create a subclass (MockAPIClient)
         // and override the login function in order to put my test code (mock)
         
-        MockApiClient.instance.login { user in
-            
-        }
+        api.login { user in }
+    }
+}
+
+class FeedVC: UIViewController {
+    
+    var api = APIClient.shared
+    
+    override func viewDidLoad() {
+        
+        // IMPORTANT: By introducing the "loadFeed" inside the APIClient we have a problem!!
+        //            "LoginVC" doesn't care about "loadFeed()" and so "FeedVC" about "login()"
+        //            We have a source code dependency: if I want to reuse the login in another application,
+        //            How can I remove the "Login" module? Can can use EXTENSIONS !!!!!
+        
+        api.loadFeed { feed in }
     }
 }
